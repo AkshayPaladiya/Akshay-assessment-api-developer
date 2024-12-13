@@ -75,3 +75,5 @@ C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Te
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Tests\obj\Debug\assessment-api-developer.Tests.csproj.CopyComplete
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Tests\obj\Debug\assessment-platform-developer.Tests.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Tests\obj\Debug\assessment-platform-developer.Tests.pdb
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Tests\bin\Debug\SimpleInjector.Integration.WebApi.dll
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer.Tests\bin\Debug\SimpleInjector.Integration.WebApi.xml

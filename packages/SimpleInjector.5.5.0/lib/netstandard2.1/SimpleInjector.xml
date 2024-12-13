@@ -451,6 +451,11 @@
             Releases all instances that are cached by the <see cref="T:SimpleInjector.Container"/> object asynchronously.
             </summary>
         </member>
+        <member name="M:SimpleInjector.Container.DisposeAsync">
+            <summary>
+            Releases all instances that are cached by the <see cref="T:SimpleInjector.Container"/> object asynchronously.
+            </summary>
+        </member>
         <member name="M:SimpleInjector.Container.#ctor">
             <summary>Initializes a new instance of the <see cref="T:SimpleInjector.Container"/> class.</summary>
         </member>
@@ -3942,6 +3947,13 @@
             </summary>
             <returns>A task that represents the asynchronous dispose operation.</returns>
         </member>
+        <member name="M:SimpleInjector.ContainerScope.DisposeAsync">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+            resources asynchronously.
+            </summary>
+            <returns>A task that represents the asynchronous dispose operation.</returns>
+        </member>
         <member name="M:SimpleInjector.ContainerScope.WhenScopeEnds(System.Action)">
             <summary>
             Allows registering an <paramref name="action"/> delegate that will be called when the container
@@ -5612,16 +5624,32 @@
              </example>
         </member>
         <member name="M:SimpleInjector.Lifestyles.AsyncScopedLifestyle.#ctor">
-            <summary>Initializes a new instance of the <see cref="T:SimpleInjector.Lifestyles.AsyncScopedLifestyle"/> class.</summary>
+            <summary>Initializes a new instance of the <see cref="T:SimpleInjector.Lifestyles.AsyncScopedLifestyle"/> class.
+            The created and cached instance will be disposed when the created
+            <see cref="T:SimpleInjector.Scope"/> instance gets disposed and when the created object implements
+            <see cref="T:System.IDisposable"/>.
+            </summary>
         </member>
         <member name="M:SimpleInjector.Lifestyles.AsyncScopedLifestyle.BeginScope(SimpleInjector.Container)">
-            <summary>
-            Begins a new scope for the given <paramref name="container"/>.
-            </summary>
-            <param name="container">The container.</param>
-            <returns>A new <see cref="T:SimpleInjector.Scope"/> instance.</returns>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown when the <paramref name="container"/> is a null reference.</exception>
+             <summary>
+             Begins a new scope for the given <paramref name="container"/>.
+             Services, registered using the <see cref="T:SimpleInjector.Lifestyles.AsyncScopedLifestyle"/> are cached during the
+             lifetime of that scope. The scope should be disposed explicitly.
+             </summary>
+             <param name="container">The container.</param>
+             <returns>A new <see cref="T:SimpleInjector.Scope"/> instance.</returns>
+             <exception cref="T:System.ArgumentNullException">
+             Thrown when the <paramref name="container"/> is a null reference.</exception>
+             <example>
+             <code lang="cs"><![CDATA[
+             using (AsyncScopedLifestyle.BeginScope())
+             {
+                 var handler = (IRequestHandler)container.GetInstance(handlerType);
+            
+                 handler.Handle(request);
+             }
+             ]]></code>
+             </example>
         </member>
         <member name="M:SimpleInjector.Lifestyles.AsyncScopedLifestyle.CreateCurrentScopeProvider(SimpleInjector.Container)">
             <summary>
@@ -5631,6 +5659,17 @@
             </summary>
             <param name="container">The container for which the delegate gets created.</param>
             <returns>A <see cref="T:System.Func`1"/> delegate. This method never returns null.</returns>
+        </member>
+        <member name="M:SimpleInjector.Lifestyles.AsyncScopedLifestyle.GetCurrentScopeCore(SimpleInjector.Container)">
+            <summary>
+            Returns the current <see cref="T:SimpleInjector.Scope"/> for this lifestyle and the given
+            <paramref name="container"/>, or null when this method is executed outside the context of a scope.
+            </summary>
+            <param name="container">The container instance that is related to the scope to return.</param>
+            <returns>A <see cref="T:SimpleInjector.Scope"/> instance or null when there is no scope active in this context.</returns>
+        </member>
+        <member name="M:SimpleInjector.Lifestyles.AsyncScopedLifestyle.SetCurrentScopeCore(SimpleInjector.Scope)">
+            <inheritdoc />
         </member>
         <member name="T:SimpleInjector.Lifestyles.FlowingScopedLifestyle">
             <summary>
@@ -5986,6 +6025,11 @@
             Releases all instances that are cached by the <see cref="T:SimpleInjector.Scope"/> object asynchronously.
             </summary>
         </member>
+        <member name="M:SimpleInjector.Scope.DisposeAsync">
+            <summary>
+            Releases all instances that are cached by the <see cref="T:SimpleInjector.Scope"/> object asynchronously.
+            </summary>
+        </member>
         <member name="M:SimpleInjector.Scope.#ctor">
             <summary>Initializes a new instance of the <see cref="T:SimpleInjector.Scope"/> class.</summary>
         </member>
@@ -6159,6 +6203,23 @@
             or bigger than one-instance-per-object-graph. In other words, a call to GetInstance() will never create
             more than one instance of such registered type.
             </summary>
+            <remarks>Initializes a new instance of the <see cref="T:SimpleInjector.ScopedLifestyle"/> class.</remarks>
+            <param name="name">The user friendly name of this lifestyle.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="name"/> is null or an empty string.
+            </exception>
+        </member>
+        <member name="M:SimpleInjector.ScopedLifestyle.#ctor(System.String)">
+            <summary>
+            Base class for scoped lifestyles. A scoped lifestyle caches instances for the duration of an implicitly
+            or explicitly defined scope. Such scope can be an (implicitly defined) web request or an explicitly
+            defined Lifetime Scope. The lifetime of instances registered with a scoped lifestyle is always equal
+            or bigger than one-instance-per-object-graph. In other words, a call to GetInstance() will never create
+            more than one instance of such registered type.
+            </summary>
+            <remarks>Initializes a new instance of the <see cref="T:SimpleInjector.ScopedLifestyle"/> class.</remarks>
+            <param name="name">The user friendly name of this lifestyle.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="name"/> is null or an empty string.
+            </exception>
         </member>
         <member name="F:SimpleInjector.ScopedLifestyle.Flowing">
             <summary>
@@ -6167,12 +6228,6 @@
             scopes to be active and overlap within the same logical context, such as a single thread, or an
             asynchronous context.
             </summary>
-        </member>
-        <member name="M:SimpleInjector.ScopedLifestyle.#ctor(System.String)">
-            <summary>Initializes a new instance of the <see cref="T:SimpleInjector.ScopedLifestyle"/> class.</summary>
-            <param name="name">The user friendly name of this lifestyle.</param>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="name"/> is null or an empty string.
-            </exception>
         </member>
         <member name="P:SimpleInjector.ScopedLifestyle.Length">
             <inheritdoc />

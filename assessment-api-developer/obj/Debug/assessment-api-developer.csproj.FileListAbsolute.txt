@@ -163,3 +163,5 @@ C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\ob
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-api-developer.csproj.CopyComplete
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-platform-developer.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-platform-developer.pdb
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.dll
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.xml
