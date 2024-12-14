@@ -69,6 +69,34 @@ namespace assessment_platform_developer
             StateDropDownList.Items.AddRange(provinceList);
         }
 
+        // Update State List Based On Selected Country
+        protected void CountryDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Get the selected country
+            string selectedCountry = CountryDropDownList.SelectedItem.Text;
+
+            // Determine which enum to use based on the selected country
+            Type enumType = selectedCountry == "Canada" ? typeof(CanadianProvinces) : typeof(USStates);
+
+            // Get the list of states or provinces from the selected enum
+            var stateList = Enum.GetValues(enumType)
+                .Cast<Enum>()
+                .Select(state => new ListItem
+                {
+                    Text = state.ToString(),
+                    Value = ((int)Enum.Parse(enumType, state.ToString())).ToString() // Cast the enum to its underlying int value
+                })
+                .ToArray();
+
+            // Clear the current state dropdown
+            StateDropDownList.Items.Clear();
+
+            // Add a default "Select State/Province" option
+            StateDropDownList.Items.Add(new ListItem("Select State/Province", ""));
+
+            // Add the new state/province options to the dropdown
+            StateDropDownList.Items.AddRange(stateList);
+        }
         // Populate the Customers dropdown list with customers from the API
         protected async void PopulateCustomerListBox()
         {

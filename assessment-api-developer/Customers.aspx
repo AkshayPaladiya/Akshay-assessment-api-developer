@@ -122,7 +122,7 @@
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerCountryLabel" runat="server" Text="Country" CssClass="form-label"></asp:Label>
-                                <asp:DropDownList ID="CountryDropDownList" runat="server" CssClass="form-control">
+                                <asp:DropDownList ID="CountryDropDownList" runat="server" CssClass="form-control" OnSelectedIndexChanged="CountryDropDownList_SelectedIndexChanged" AutoPostBack="true">
                                     <asp:ListItem Text="Select Country" Value="" />
                                  
                                 </asp:DropDownList>
