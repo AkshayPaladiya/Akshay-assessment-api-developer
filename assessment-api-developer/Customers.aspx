@@ -74,26 +74,33 @@
                             <div class="form-group">
                                 <asp:Label ID="CustomerNameLabel" runat="server" Text="Name" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerName" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerName" runat="server" ControlToValidate="CustomerName" ErrorMessage="Name is required." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerAddressLabel" runat="server" Text="Address" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerAddress" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerAddress" runat="server" ControlToValidate="CustomerAddress" ErrorMessage="Address is required." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerEmailLabel" runat="server" Text="Email" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerEmail" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerEmail" runat="server" ControlToValidate="CustomerEmail" ErrorMessage="Email is required." ForeColor="Red" />
+                                <asp:RegularExpressionValidator ID="revCustomerEmail" runat="server" ControlToValidate="CustomerEmail" ValidationExpression="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" ErrorMessage="Invalid email format." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerPhoneLabel" runat="server" Text="Phone" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerPhone" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerPhone" runat="server" ControlToValidate="CustomerPhone" ErrorMessage="Phone is required." ForeColor="Red" />
+                                <asp:RegularExpressionValidator ID="revCustomerPhone" runat="server" ControlToValidate="CustomerPhone" ValidationExpression="^\+?\d{1,4}?[\d\s\-()]*\d+$" ErrorMessage="Invalid phone format." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerCityLabel" runat="server" Text="City" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerCity" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerCity" runat="server" ControlToValidate="CustomerCity" ErrorMessage="City is required." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
@@ -102,11 +109,15 @@
                                     <asp:ListItem Text="Select State" Value="" />
                                     
                                 </asp:DropDownList>
+                                 <asp:RequiredFieldValidator ID="rfvCustomerState" runat="server" ControlToValidate="StateDropDownList" InitialValue="" ErrorMessage="State is required." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="CustomerZipLabel" runat="server" Text="Postal/Zip Code" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="CustomerZip" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvCustomerZip" runat="server" ControlToValidate="CustomerZip" ErrorMessage="Zip code is required." ForeColor="Red" />
+                                <asp:RegularExpressionValidator ID="revCustomerZip" runat="server" ControlToValidate="CustomerZip" ValidationExpression="(^\d{5}(-\d{4})?$)|(^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$)" ErrorMessage="Invalid zip/postal code format." ForeColor="Red" />
+
                             </div>
 
                             <div class="form-group">
@@ -128,16 +139,21 @@
                             <div class="form-group">
                                 <asp:Label ID="ContactNameLabel" runat="server" Text="Contact Name" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="ContactName" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvContactName" runat="server" ControlToValidate="ContactName" ErrorMessage="Contact Name is required." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="ContactEmailLabel" runat="server" Text="Contact Email" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="ContactEmail" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvContactEmail" runat="server" ControlToValidate="ContactEmail" ErrorMessage="Contact Email is required." ForeColor="Red" />
+                                <asp:RegularExpressionValidator ID="revContactEmail" runat="server" ControlToValidate="ContactEmail" ValidationExpression="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" ErrorMessage="Invalid email format." ForeColor="Red" />
                             </div>
 
                             <div class="form-group">
                                 <asp:Label ID="ContactPhoneLabel" runat="server" Text="Contact Phone" CssClass="form-label"></asp:Label>
                                 <asp:TextBox ID="ContactPhone" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="rfvContactPhone" runat="server" ControlToValidate="ContactPhone" ErrorMessage="Contact Phone is required." ForeColor="Red" />
+                                <asp:RegularExpressionValidator ID="revContactPhone" runat="server" ControlToValidate="ContactPhone" ValidationExpression="^\+?\d{1,4}?[\d\s\-()]*\d+$" ErrorMessage="Invalid phone format." ForeColor="Red" />
                             </div>
 
                             <!-- Action buttons -->

@@ -45,6 +45,12 @@ namespace assessment_platform_developer.Controllers
         [Route("")]
         public IHttpActionResult AddCustomer(Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                // If the model state is invalid, return a BadRequest with validation errors
+                return BadRequest(ModelState);
+            }
+
             if (customer == null)
             {
                 return BadRequest("Invalid customer data.");
@@ -65,6 +71,12 @@ namespace assessment_platform_developer.Controllers
         [Route("{id:int}")]
         public IHttpActionResult UpdateCustomer(int id, Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                // If the model state is invalid, return a BadRequest with validation errors
+                return BadRequest(ModelState);
+            } 
+
             if (customer == null || customer.ID != id)
             {
                 return BadRequest("Customer data is invalid.");

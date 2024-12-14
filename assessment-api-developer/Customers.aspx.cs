@@ -27,14 +27,16 @@ namespace assessment_platform_developer
 
                 var allCustomers = customerService.GetAllCustomers();
                 ViewState["Customers"] = allCustomers;
+
+
+                // Populate country and state dropdowns
+                PopulateCustomerDropDownLists();
             }
             else
             {
                 customers = (List<Customer>)ViewState["Customers"];
             }
 
-            // Populate country and state dropdowns
-            PopulateCustomerDropDownLists();
         }
 
         // Populate state and country dropdowns
@@ -138,9 +140,9 @@ namespace assessment_platform_developer
                 Name = CustomerName.Text,
                 Address = CustomerAddress.Text,
                 City = CustomerCity.Text,
-                State = StateDropDownList.SelectedValue,
+                State = StateDropDownList.SelectedItem.Text,
                 Zip = CustomerZip.Text,
-                Country = CountryDropDownList.SelectedValue,
+                Country = CountryDropDownList.SelectedItem.Text,
                 Email = CustomerEmail.Text,
                 Phone = CustomerPhone.Text,
                 Notes = CustomerNotes.Text,
@@ -267,9 +269,9 @@ namespace assessment_platform_developer
                         CustomerName.Text = customer.Name;
                         CustomerAddress.Text = customer.Address;
                         CustomerCity.Text = customer.City;
-                        StateDropDownList.SelectedValue = customer.State;
+                        StateDropDownList.SelectedItem.Text = customer.State;
                         CustomerZip.Text = customer.Zip;
-                        CountryDropDownList.SelectedValue = customer.Country;
+                        CountryDropDownList.SelectedItem.Text = customer.Country;
                         CustomerEmail.Text = customer.Email;
                         CustomerPhone.Text = customer.Phone;
                         CustomerNotes.Text = customer.Notes;
@@ -324,9 +326,9 @@ namespace assessment_platform_developer
                         customer.Name = CustomerName.Text;
                         customer.Address = CustomerAddress.Text;
                         customer.City = CustomerCity.Text;
-                        customer.State = StateDropDownList.SelectedValue;
+                        customer.State = StateDropDownList.SelectedItem.Text;
                         customer.Zip = CustomerZip.Text;
-                        customer.Country = CountryDropDownList.SelectedValue;
+                        customer.Country = CountryDropDownList.SelectedItem.Text;
                         customer.Email = CustomerEmail.Text;
                         customer.Phone = CustomerPhone.Text;
                         customer.Notes = CustomerNotes.Text;
