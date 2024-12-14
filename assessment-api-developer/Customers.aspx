@@ -58,7 +58,7 @@
             <h2>Customer Registry</h2>
 
             <!-- Dropdown for selecting customers -->
-            <asp:DropDownList runat="server" ID="CustomersDDL" CssClass="form-control" AutoPostBack="true">
+            <asp:DropDownList runat="server" ID="CustomersDDL" CssClass="form-control" OnSelectedIndexChanged="CustomersDDL_SelectedIndexChanged" AutoPostBack="true">
                 <asp:ListItem Text="Select Customer" Value="" />
             </asp:DropDownList>
         </div>
@@ -143,6 +143,9 @@
                             <!-- Action buttons -->
                             <div class="form-group">
                                 <asp:Button ID="AddButton" runat="server" CssClass="btn btn-primary btn-md" Text="Add" OnClick="AddButton_Click" />
+                                <asp:Button ID="UpdateButton" runat="server" CssClass="btn btn-warning btn-md" Text="Update" OnClick="UpdateButton_Click" Visible="false" />
+                                <asp:Button ID="DeleteButton" runat="server" CssClass="btn btn-danger btn-md" Text="Delete" OnClick="DeleteButton_Click" Visible="false" />
+                            
                             </div>
                         </div>
                     </div>

@@ -208,7 +208,244 @@ namespace assessment_platform_developer
             ContactEmail.Text = string.Empty;
         }
 
+        // Helper method to get customer by ID using HttpClient
+        private async Task<Customer> GetCustomerByIdAsync(int customerId)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // Set the base address of the API (adjust the URL as necessary)
+                    client.BaseAddress = new Uri("https://localhost:44358/");
 
+                    // Send GET request to the API endpoint to retrieve the customer by ID
+                    var response = await client.GetAsync($"api/customers/{customerId}");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Read the content of the response as a string
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // Deserialize the string into a customer object
+                        var customer = JsonConvert.DeserializeObject<Customer>(responseContent);
+
+                        return customer;
+                    }
+                    else
+                    {
+                        // Handle unsuccessful response (optional, you can log or show a message)
+                        return null; // Or you could throw an exception
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception as needed
+                // For now, we just return null
+                return null;
+            }
+        }
+
+        protected async void CustomersDDL_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selectedCustomerId = CustomersDDL.SelectedValue;
+
+            if (!string.IsNullOrEmpty(selectedCustomerId))
+            {
+                try
+                {
+                    // Convert the selected ID to an integer (if it's a number)
+                    int customerId = int.Parse(selectedCustomerId);
+
+                    // Use the reusable method to get the customer by ID
+                    var customer = await GetCustomerByIdAsync(customerId);
+
+                    // Check if the customer is found
+                    if (customer != null)
+                    {
+                        // Populate the customer details into the form fields
+                        CustomerName.Text = customer.Name;
+                        CustomerAddress.Text = customer.Address;
+                        CustomerCity.Text = customer.City;
+                        StateDropDownList.SelectedValue = customer.State;
+                        CustomerZip.Text = customer.Zip;
+                        CountryDropDownList.SelectedValue = customer.Country;
+                        CustomerEmail.Text = customer.Email;
+                        CustomerPhone.Text = customer.Phone;
+                        CustomerNotes.Text = customer.Notes;
+                        ContactName.Text = customer.ContactName;
+                        ContactPhone.Text = customer.ContactPhone;
+                        ContactEmail.Text = customer.ContactEmail;
+
+                        // Show the Update and Delete buttons
+                        UpdateButton.Visible = true;
+                        DeleteButton.Visible = true;
+                    }
+                    else
+                    {
+                        // Handle failure (e.g., customer not found)
+                        Response.Write("<script>alert('Customer not found.');</script>");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors (e.g., invalid ID, network issues, etc.)
+                    Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
+                }
+            }
+            else
+            {
+                // Hide the buttons if no customer is selected
+                UpdateButton.Visible = false;
+                DeleteButton.Visible = false;
+            }
+        }
+
+
+
+        protected async void UpdateButton_Click(object sender, EventArgs e)
+        {
+            // Logic for updating the selected customer
+            string selectedCustomerId = CustomersDDL.SelectedValue;
+
+            if (!string.IsNullOrEmpty(selectedCustomerId))
+            {
+                try
+                {
+                    // Convert the selected ID to an integer (if it's a number)
+                    int customerId = int.Parse(selectedCustomerId);
+
+                    // Use the reusable method to get the customer by ID
+                    var customer = await GetCustomerByIdAsync(customerId);
+
+                    if (customer != null)
+                    {
+                        // Update the customer details based on form inputs
+                        customer.Name = CustomerName.Text;
+                        customer.Address = CustomerAddress.Text;
+                        customer.City = CustomerCity.Text;
+                        customer.State = StateDropDownList.SelectedValue;
+                        customer.Zip = CustomerZip.Text;
+                        customer.Country = CountryDropDownList.SelectedValue;
+                        customer.Email = CustomerEmail.Text;
+                        customer.Phone = CustomerPhone.Text;
+                        customer.Notes = CustomerNotes.Text;
+                        customer.ContactName = ContactName.Text;
+                        customer.ContactPhone = ContactPhone.Text;
+                        customer.ContactEmail = ContactEmail.Text;
+
+                        // Now, send the updated customer details to the API
+                        using (var client = new HttpClient())
+                        {
+                            // Set the base address of the API (adjust the URL as necessary)
+                            client.BaseAddress = new Uri("https://localhost:44358/");
+
+                            // Set the content type for the request
+                            var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
+
+                            // Make the PUT request to the API to update the customer
+                            var response = await client.PutAsync($"api/customers/{customer.ID}", content);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                // If successful, show a success message
+                                Response.Write("<script>alert('Customer updated successfully.');</script>");
+
+                                // Hide the buttons after update and Clear Form
+                                UpdateButton.Visible = false;
+                                DeleteButton.Visible = false;
+
+                                ClearCustomerForm();
+                            }
+                            else
+                            {
+                                // If the API call fails, show an error message
+                                Response.Write("<script>alert('Failed to update customer.');</script>");
+                            }
+                            // Refresh the customer dropdown list
+                            PopulateCustomerListBox();
+                        }
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('Customer not found.');</script>");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors (e.g., invalid ID, network issues, etc.)
+                    Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
+                }
+            }
+            else
+            {
+                Response.Write("<script>alert('Please select a customer to update.');</script>");
+            }
+        }
+
+        protected async void DeleteButton_Click(object sender, EventArgs e)
+        {
+            string selectedCustomerId = CustomersDDL.SelectedValue;
+
+            if (!string.IsNullOrEmpty(selectedCustomerId))
+            {
+                try
+                {
+                    // Convert the selected ID to an integer (if it's a number)
+                    int customerId = int.Parse(selectedCustomerId);
+
+                    // Use the reusable method to get the customer by ID
+                    var customer = await GetCustomerByIdAsync(customerId);
+
+                    if (customer != null)
+                    {
+                        // Make the DELETE request to the API to delete the customer
+                        using (var client = new HttpClient())
+                        {
+                            client.BaseAddress = new Uri("https://localhost:44358/");
+
+                            // Make the DELETE request
+                            var response = await client.DeleteAsync($"api/customers/{customer.ID}");
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                // If successful, remove the customer from the in-memory list
+                                customers.Remove(customer);
+
+                                // Refresh the customer dropdown list
+                                PopulateCustomerListBox();
+
+                                // Clear the form
+                                ClearCustomerForm();
+
+                                // Show success message
+                                Response.Write("<script>alert('Customer deleted successfully.');</script>");
+                            }
+                            else
+                            {
+                                // If the API call fails, show an error message
+                                Response.Write("<script>alert('Failed to delete customer.');</script>");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Customer not found (handle appropriately)
+                        Response.Write("<script>alert('Customer not found.');</script>");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors (e.g., invalid ID, network issues, etc.)
+                    Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
+                }
+            }
+            else
+            {
+                // If no customer is selected
+                Response.Write("<script>alert('Please select a customer to delete.');</script>");
+            }
+        }
 
 
 
