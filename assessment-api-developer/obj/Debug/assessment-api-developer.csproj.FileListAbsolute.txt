@@ -137,6 +137,7 @@ C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bi
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\Newtonsoft.Json.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.Web.dll
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\Swashbuckle.Core.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\System.Net.Http.Formatting.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\System.Web.Cors.dll
@@ -150,6 +151,7 @@ C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bi
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\EntityFramework.SqlServer.xml
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.xml
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.Web.xml
+C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.xml
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\System.Net.Http.Formatting.xml
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\System.Web.Http.xml
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\System.Web.Http.Cors.xml
@@ -163,5 +165,3 @@ C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\ob
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-api-developer.csproj.CopyComplete
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-platform-developer.dll
 C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\obj\Debug\assessment-platform-developer.pdb
-C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.dll
-C:\Users\14169\source\repos\assessment-api-developer\assessment-api-developer\bin\SimpleInjector.Integration.WebApi.xml
