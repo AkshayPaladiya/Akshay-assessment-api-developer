@@ -60,31 +60,49 @@ namespace assessment_platform_developer
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomerName;
 
         /// <summary>
-        /// CustomerAddressLabel control.
+        /// CustomerPhoneLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CustomerAddressLabel;
+        protected global::System.Web.UI.WebControls.Label CustomerPhoneLabel;
 
         /// <summary>
-        /// CustomerAddress control.
+        /// CustomerPhone control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox CustomerAddress;
+        protected global::System.Web.UI.WebControls.TextBox CustomerPhone;
 
         /// <summary>
-        /// rfvCustomerAddress control.
+        /// rfvCustomerPhone control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomerAddress;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomerPhone;
+
+        /// <summary>
+        /// CustomerNotesLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label CustomerNotesLabel;
+
+        /// <summary>
+        /// CustomerNotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox CustomerNotes;
 
         /// <summary>
         /// CustomerEmailLabel control.
@@ -123,40 +141,31 @@ namespace assessment_platform_developer
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revCustomerEmail;
 
         /// <summary>
-        /// CustomerPhoneLabel control.
+        /// CustomerAddressLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CustomerPhoneLabel;
+        protected global::System.Web.UI.WebControls.Label CustomerAddressLabel;
 
         /// <summary>
-        /// CustomerPhone control.
+        /// CustomerAddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox CustomerPhone;
+        protected global::System.Web.UI.WebControls.TextBox CustomerAddress;
 
         /// <summary>
-        /// rfvCustomerPhone control.
+        /// rfvCustomerAddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomerPhone;
-
-        /// <summary>
-        /// revCustomerPhone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revCustomerPhone;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCustomerAddress;
 
         /// <summary>
         /// CustomerCityLabel control.
@@ -265,24 +274,6 @@ namespace assessment_platform_developer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList CountryDropDownList;
-
-        /// <summary>
-        /// CustomerNotesLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label CustomerNotesLabel;
-
-        /// <summary>
-        /// CustomerNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox CustomerNotes;
 
         /// <summary>
         /// ContactNameLabel control.
