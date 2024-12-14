@@ -80,6 +80,7 @@ namespace assessment_platform_developer
             // 2. Configure the container (register services and repositories)
             container.Register<ICustomerRepository, CustomerRepository>(Lifestyle.Singleton);
             container.Register<ICustomerService, CustomerService>(Lifestyle.Scoped);
+            container.Register<ICustomerApiService, CustomerApiService>(Lifestyle.Singleton);
 
             // Register Web API controllers with Scoped lifestyle
             RegisterWebApiControllers(container);

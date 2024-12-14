@@ -1,166 +1,95 @@
-﻿using assessment_platform_developer.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SimpleInjector;
+using System.Linq;
+using assessment_platform_developer.Models;
 using assessment_platform_developer.Services;
-using Container = SimpleInjector.Container;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using assessment_platform_developer.Helpers;
 
 namespace assessment_platform_developer
 {
     public partial class Customers : Page
     {
         private static List<Customer> customers = new List<Customer>();
+        
+        
 
-        protected void Page_Load(object sender, EventArgs e)
+
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                // Get the DI container from the Application context
                 var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
-                var customerService = testContainer.GetInstance<ICustomerService>();
 
-                var allCustomers = customerService.GetAllCustomers();
+                if (testContainer == null)
+                {
+                    throw new InvalidOperationException("DI Container is not initialized.");
+                }
+
+                // Resolve the ICustomerApiService instance from the container
+                var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+
+                
+
+                // Fetch all customers on the initial page load
+                var allCustomers = customerApiService.GetAllCustomersAsync().Result;
                 ViewState["Customers"] = allCustomers;
 
-
                 // Populate country and state dropdowns
-                PopulateCustomerDropDownLists();
+                CustomerHelper.PopulateCustomerDropDownLists(CountryDropDownList, StateDropDownList);
             }
             else
             {
+                // On postback, load customers from ViewState
                 customers = (List<Customer>)ViewState["Customers"];
             }
 
         }
 
-        // Populate state and country dropdowns
-        private void PopulateCustomerDropDownLists()
-        {
-            // Populate country dropdown (Enums for Countries)
-            var countryList = Enum.GetValues(typeof(Countries))
-                .Cast<Countries>()
-                .Select(c => new ListItem
-                {
-                    Text = c.ToString(),
-                    Value = ((int)c).ToString()
-                })
-                .ToArray();
-
-            CountryDropDownList.Items.AddRange(countryList);
-            CountryDropDownList.SelectedValue = ((int)Countries.Canada).ToString();  // Default to Canada
-
-            // Populate province (state) dropdown (Enums for Canadian Provinces)
-            var provinceList = Enum.GetValues(typeof(CanadianProvinces))
-                .Cast<CanadianProvinces>()
-                .Select(p => new ListItem
-                {
-                    Text = p.ToString(),
-                    Value = ((int)p).ToString()
-                })
-                .ToArray();
-
-            StateDropDownList.Items.Add(new ListItem("Select Province", ""));
-            StateDropDownList.Items.AddRange(provinceList);
-        }
-
-        // Update State List Based On Selected Country
-        protected void CountryDropDownList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Get the selected country
-            string selectedCountry = CountryDropDownList.SelectedItem.Text;
-
-            // Determine which enum to use based on the selected country
-            Type enumType = selectedCountry == "Canada" ? typeof(CanadianProvinces) : typeof(USStates);
-
-            // Get the list of states or provinces from the selected enum
-            var stateList = Enum.GetValues(enumType)
-                .Cast<Enum>()
-                .Select(state => new ListItem
-                {
-                    Text = state.ToString(),
-                    Value = ((int)Enum.Parse(enumType, state.ToString())).ToString() // Cast the enum to its underlying int value
-                })
-                .ToArray();
-
-            // Clear the current state dropdown
-            StateDropDownList.Items.Clear();
-
-            // Add a default "Select State/Province" option
-            StateDropDownList.Items.Add(new ListItem("Select State/Province", ""));
-
-            // Add the new state/province options to the dropdown
-            StateDropDownList.Items.AddRange(stateList);
-        }
-        // Populate the Customers dropdown list with customers from the API
+        // Populate the Customers dropdown list
         protected async void PopulateCustomerListBox()
         {
             CustomersDDL.Items.Clear();
             CustomersDDL.Items.Add(new ListItem
             {
-                Text = "Select Coustomer",
+                Text = "Select Customer",
                 Value = ""
             });
 
             try
             {
-                // Create an HttpClient instance
-                using (var client = new HttpClient())
+                var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+                var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+
+                var customerList = await customerApiService.GetAllCustomersAsync();
+
+                if (customerList != null && customerList.Count > 0)
                 {
-                    // Set the base address of the API
-                    client.BaseAddress = new Uri("https://localhost:44358/");
-
-                    // Send GET request to retrieve all customers
-                    var response = await client.GetAsync("api/customers");
-
-                    if (response.IsSuccessStatusCode)
+                    var customerItems = customerList.Select(c => new ListItem
                     {
-                        // Read the content of the response as a string
-                        var responseContent = await response.Content.ReadAsStringAsync();
+                        Text = c.Name,
+                        Value = c.ID.ToString()
+                    }).ToArray();
 
-                        // Deserialize the string into a list of customers
-                        var customers = JsonConvert.DeserializeObject<List<Customer>>(responseContent);
-
-                        // Check if there are any customers and populate the dropdown list
-                        if (customers != null && customers.Count > 0)
-                        {
-                            // var customerItems = customers.Select(c => new ListItem(c.Name)).ToArray();
-
-                            var customerItems = customers.Select(c => new ListItem
-                            {
-                                Text = c.Name,           // Display Name of the customer
-                                Value = c.ID.ToString()  // Use Customer ID as the Value
-                            }).ToArray();
-
-                            CustomersDDL.Items.AddRange(customerItems);
-                            CustomersDDL.SelectedIndex = 0;
-                        }
-                        else
-                        {
-                            // If no customers, add a placeholder
-                            CustomersDDL.Items.Add(new ListItem("No customers found"));
-                        }
-                    }
-                    else
-                    {
-                        // If the API call fails, show an error message
-                        Response.Write("<script>alert('Failed to retrieve customers.');</script>");
-                    }
+                    CustomersDDL.Items.AddRange(customerItems);
+                    
+                }
+                else
+                {
+                    CustomersDDL.Items.Add(new ListItem("No customers found"));
                 }
             }
             catch (Exception ex)
             {
-                // Log and handle any exceptions (e.g., network issues)
                 Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
             }
         }
 
-        // Handle the Add Customer button click event
+        // Add a new customer to the system
         protected async void AddButton_Click(object sender, EventArgs e)
         {
             var customer = new Customer
@@ -181,101 +110,25 @@ namespace assessment_platform_developer
 
             try
             {
-                // Create an HttpClient instance
-                using (var client = new HttpClient())
-                {
-                    // Set the base address of the API
-                    client.BaseAddress = new Uri("https://localhost:44358/");
+                var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+                var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+                var addedCustomer = await customerApiService.AddCustomerAsync(customer);
+                customers.Add(addedCustomer);
 
-                    // Set the content type for the request
-                    var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
+                // Refresh the customer list in the dropdown
+                PopulateCustomerListBox();
 
-                    // Make the POST request to the API to add a new customer
-                    var response = await client.PostAsync("api/customers", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // If successful, retrieve the added customer (optional, or you can just refresh UI)
-                        var addedCustomer = await response.Content.ReadAsAsync<Customer>();
-
-                        // Add the customer to the in-memory list
-                        customers.Add(addedCustomer);
-
-                        // Refresh the customer list in the dropdown
-                        PopulateCustomerListBox();
-
-                        // Clear form fields after submission
-                        ClearCustomerForm();
-                    }
-                    else
-                    {
-                        // Handle failure response (e.g., show an error message)
-                        Response.Write("<script>alert('Failed to add customer.');</script>");
-                    }
-                }
+                // Clear the form after submission
+                CustomerHelper.ClearCustomerForm(CustomerName, CustomerAddress, CustomerEmail, CustomerPhone, CustomerCity, StateDropDownList,
+                                                  CustomerZip, CountryDropDownList, CustomerNotes, ContactName, ContactPhone, ContactEmail);
             }
             catch (Exception ex)
             {
-                // Log and handle any exceptions (e.g., network issues)
                 Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
             }
         }
 
-        // Clear customer form fields
-        private void ClearCustomerForm()
-        {
-            CustomerName.Text = string.Empty;
-            CustomerAddress.Text = string.Empty;
-            CustomerEmail.Text = string.Empty;
-            CustomerPhone.Text = string.Empty;
-            CustomerCity.Text = string.Empty;
-            StateDropDownList.SelectedIndex = 0;
-            CustomerZip.Text = string.Empty;
-            CountryDropDownList.SelectedIndex = 0;
-            CustomerNotes.Text = string.Empty;
-            ContactName.Text = string.Empty;
-            ContactPhone.Text = string.Empty;
-            ContactEmail.Text = string.Empty;
-        }
-
-        // Helper method to get customer by ID using HttpClient
-        private async Task<Customer> GetCustomerByIdAsync(int customerId)
-        {
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    // Set the base address of the API (adjust the URL as necessary)
-                    client.BaseAddress = new Uri("https://localhost:44358/");
-
-                    // Send GET request to the API endpoint to retrieve the customer by ID
-                    var response = await client.GetAsync($"api/customers/{customerId}");
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Read the content of the response as a string
-                        var responseContent = await response.Content.ReadAsStringAsync();
-
-                        // Deserialize the string into a customer object
-                        var customer = JsonConvert.DeserializeObject<Customer>(responseContent);
-
-                        return customer;
-                    }
-                    else
-                    {
-                        // Handle unsuccessful response (optional, you can log or show a message)
-                        return null; // Or you could throw an exception
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception as needed
-                // For now, we just return null
-                return null;
-            }
-        }
-
+        // Handle customer selection change in the dropdown
         protected async void CustomersDDL_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedCustomerId = CustomersDDL.SelectedValue;
@@ -284,16 +137,15 @@ namespace assessment_platform_developer
             {
                 try
                 {
-                    // Convert the selected ID to an integer (if it's a number)
                     int customerId = int.Parse(selectedCustomerId);
+                    var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+                    var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+                    var customer = await customerApiService.GetCustomerByIdAsync(customerId);
 
-                    // Use the reusable method to get the customer by ID
-                    var customer = await GetCustomerByIdAsync(customerId);
-
-                    // Check if the customer is found
                     if (customer != null)
                     {
-                        // Populate the customer details into the form fields
+                        CustomerHelper.PopulateCustomerDropDownLists(CountryDropDownList, StateDropDownList);
+
                         CustomerName.Text = customer.Name;
                         CustomerAddress.Text = customer.Address;
                         CustomerCity.Text = customer.City;
@@ -307,50 +159,42 @@ namespace assessment_platform_developer
                         ContactPhone.Text = customer.ContactPhone;
                         ContactEmail.Text = customer.ContactEmail;
 
-                        // Show the Update and Delete buttons
                         UpdateButton.Visible = true;
                         DeleteButton.Visible = true;
                     }
                     else
                     {
-                        // Handle failure (e.g., customer not found)
                         Response.Write("<script>alert('Customer not found.');</script>");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle any errors (e.g., invalid ID, network issues, etc.)
                     Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
                 }
             }
             else
             {
-                // Hide the buttons if no customer is selected
                 UpdateButton.Visible = false;
                 DeleteButton.Visible = false;
             }
         }
 
-
-
+        // Update an existing customer's information
         protected async void UpdateButton_Click(object sender, EventArgs e)
         {
-            // Logic for updating the selected customer
             string selectedCustomerId = CustomersDDL.SelectedValue;
 
             if (!string.IsNullOrEmpty(selectedCustomerId))
             {
                 try
                 {
-                    // Convert the selected ID to an integer (if it's a number)
                     int customerId = int.Parse(selectedCustomerId);
-
-                    // Use the reusable method to get the customer by ID
-                    var customer = await GetCustomerByIdAsync(customerId);
+                    var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+                    var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+                    var customer = await customerApiService.GetCustomerByIdAsync(customerId);
 
                     if (customer != null)
                     {
-                        // Update the customer details based on form inputs
                         customer.Name = CustomerName.Text;
                         customer.Address = CustomerAddress.Text;
                         customer.City = CustomerCity.Text;
@@ -364,36 +208,20 @@ namespace assessment_platform_developer
                         customer.ContactPhone = ContactPhone.Text;
                         customer.ContactEmail = ContactEmail.Text;
 
-                        // Now, send the updated customer details to the API
-                        using (var client = new HttpClient())
+                        var updatedCustomer = await customerApiService.UpdateCustomerAsync(customerId, customer);
+
+                        if (updatedCustomer != null)
                         {
-                            // Set the base address of the API (adjust the URL as necessary)
-                            client.BaseAddress = new Uri("https://localhost:44358/");
-
-                            // Set the content type for the request
-                            var content = new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json");
-
-                            // Make the PUT request to the API to update the customer
-                            var response = await client.PutAsync($"api/customers/{customer.ID}", content);
-
-                            if (response.IsSuccessStatusCode)
-                            {
-                                // If successful, show a success message
-                                Response.Write("<script>alert('Customer updated successfully.');</script>");
-
-                                // Hide the buttons after update and Clear Form
-                                UpdateButton.Visible = false;
-                                DeleteButton.Visible = false;
-
-                                ClearCustomerForm();
-                            }
-                            else
-                            {
-                                // If the API call fails, show an error message
-                                Response.Write("<script>alert('Failed to update customer.');</script>");
-                            }
-                            // Refresh the customer dropdown list
+                            Response.Write("<script>alert('Customer updated successfully.');</script>");
                             PopulateCustomerListBox();
+                            CustomerHelper.ClearCustomerForm(CustomerName, CustomerAddress, CustomerEmail, CustomerPhone, CustomerCity, StateDropDownList,
+                                                              CustomerZip, CountryDropDownList, CustomerNotes, ContactName, ContactPhone, ContactEmail);
+                            UpdateButton.Visible = false;
+                            DeleteButton.Visible = false;
+                        }
+                        else
+                        {
+                            Response.Write("<script>alert('Failed to update customer.');</script>");
                         }
                     }
                     else
@@ -403,7 +231,6 @@ namespace assessment_platform_developer
                 }
                 catch (Exception ex)
                 {
-                    // Handle any errors (e.g., invalid ID, network issues, etc.)
                     Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
                 }
             }
@@ -413,6 +240,7 @@ namespace assessment_platform_developer
             }
         }
 
+        // Delete a customer from the system
         protected async void DeleteButton_Click(object sender, EventArgs e)
         {
             string selectedCustomerId = CustomersDDL.SelectedValue;
@@ -421,63 +249,45 @@ namespace assessment_platform_developer
             {
                 try
                 {
-                    // Convert the selected ID to an integer (if it's a number)
                     int customerId = int.Parse(selectedCustomerId);
 
-                    // Use the reusable method to get the customer by ID
-                    var customer = await GetCustomerByIdAsync(customerId);
+                    var testContainer = (Container)HttpContext.Current.Application["DIContainer"];
+                    var customerApiService = testContainer.GetInstance<ICustomerApiService>();
+                    var customer = await customerApiService.GetCustomerByIdAsync(customerId);
 
                     if (customer != null)
                     {
-                        // Make the DELETE request to the API to delete the customer
-                        using (var client = new HttpClient())
+                        var isDeleted = await customerApiService.DeleteCustomerAsync(customerId);
+
+                        if (isDeleted)
                         {
-                            client.BaseAddress = new Uri("https://localhost:44358/");
-
-                            // Make the DELETE request
-                            var response = await client.DeleteAsync($"api/customers/{customer.ID}");
-
-                            if (response.IsSuccessStatusCode)
-                            {
-                                // If successful, remove the customer from the in-memory list
-                                customers.Remove(customer);
-
-                                // Refresh the customer dropdown list
-                                PopulateCustomerListBox();
-
-                                // Clear the form
-                                ClearCustomerForm();
-
-                                // Show success message
-                                Response.Write("<script>alert('Customer deleted successfully.');</script>");
-                            }
-                            else
-                            {
-                                // If the API call fails, show an error message
-                                Response.Write("<script>alert('Failed to delete customer.');</script>");
-                            }
+                            Response.Write("<script>alert('Customer deleted successfully.');</script>");
+                            customers.Remove(customer);
+                            PopulateCustomerListBox();
+                            CustomerHelper.ClearCustomerForm(CustomerName, CustomerAddress, CustomerEmail, CustomerPhone, CustomerCity, StateDropDownList,
+                                                              CustomerZip, CountryDropDownList, CustomerNotes, ContactName, ContactPhone, ContactEmail);
+                            UpdateButton.Visible = false;
+                            DeleteButton.Visible = false;
+                        }
+                        else
+                        {
+                            Response.Write("<script>alert('Failed to delete customer.');</script>");
                         }
                     }
                     else
                     {
-                        // Customer not found (handle appropriately)
                         Response.Write("<script>alert('Customer not found.');</script>");
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle any errors (e.g., invalid ID, network issues, etc.)
                     Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
                 }
             }
             else
             {
-                // If no customer is selected
                 Response.Write("<script>alert('Please select a customer to delete.');</script>");
             }
         }
-
-
-
     }
 }
