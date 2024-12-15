@@ -38,10 +38,9 @@ namespace assessment_platform_developer.Models
         [Required(ErrorMessage = "State is required.")]
         public string State { get; set; }
 
-       
+
         [Required(ErrorMessage = "Postal/Zip code is required.")]
-        [RegularExpression(@"(^\d{5}(-\d{4})?$)|(^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$)",
-            ErrorMessage = "Invalid zip/postal code format.")]
+        [RegularExpression(@"(^\d{5}(-\d{4})?$)|(^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$)",ErrorMessage = "Invalid zip/postal code format.")]
         public string Zip { get; set; }
 
         [Required(ErrorMessage = "Country is required.")]

@@ -278,7 +278,7 @@
                                         <asp:Label ID="CustomerZipLabel" runat="server" Text="Postal/Zip Code" CssClass="form-label"></asp:Label>
                                         <asp:TextBox ID="CustomerZip" runat="server" CssClass="form-control" placeholder="Enter zip code"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="rfvCustomerZip" runat="server" ControlToValidate="CustomerZip" ErrorMessage="Zip code is required." ForeColor="Red" />
-                                        <asp:RegularExpressionValidator ID="revCustomerZip" runat="server" ControlToValidate="CustomerZip" ValidationExpression="(^\d{5}(-\d{4})?$)|(^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$)" ErrorMessage="Invalid zip/postal code format." ForeColor="Red" />
+                                        <asp:RegularExpressionValidator ID="revCustomerZip" runat="server" ControlToValidate="CustomerZip" ValidationExpression="(^\d{5}(-\d{4})?$)|(^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$)" ErrorMessage="Invalid zip/postal code format." ForeColor="Red" />
                                     </div>
 
                                     <!-- Customer Country -->
