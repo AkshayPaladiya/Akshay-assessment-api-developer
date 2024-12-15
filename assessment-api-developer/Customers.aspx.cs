@@ -92,21 +92,11 @@ namespace assessment_platform_developer
         // Add a new customer to the system
         protected async void AddButton_Click(object sender, EventArgs e)
         {
-            var customer = new Customer
-            {
-                Name = CustomerName.Text,
-                Address = CustomerAddress.Text,
-                City = CustomerCity.Text,
-                State = StateDropDownList.SelectedItem.Text,
-                Zip = CustomerZip.Text,
-                Country = CountryDropDownList.SelectedItem.Text,
-                Email = CustomerEmail.Text,
-                Phone = CustomerPhone.Text,
-                Notes = CustomerNotes.Text,
-                ContactName = ContactName.Text,
-                ContactPhone = ContactPhone.Text,
-                ContactEmail = ContactEmail.Text
-            };
+            var customer = new Customer();
+            // Use the helper method to populate the customer object with the form data
+            CustomerHelper.PopulateCustomerFromForm(customer, CustomerName, CustomerAddress, CustomerCity, StateDropDownList,
+                                                     CustomerZip, CountryDropDownList, CustomerEmail, CustomerPhone,
+                                                     CustomerNotes, ContactName, ContactPhone, ContactEmail);
 
             try
             {
@@ -146,18 +136,11 @@ namespace assessment_platform_developer
                     {
                         CustomerHelper.PopulateCustomerDropDownLists(CountryDropDownList, StateDropDownList);
 
-                        CustomerName.Text = customer.Name;
-                        CustomerAddress.Text = customer.Address;
-                        CustomerCity.Text = customer.City;
-                        StateDropDownList.SelectedItem.Text = customer.State;
-                        CustomerZip.Text = customer.Zip;
-                        CountryDropDownList.SelectedItem.Text = customer.Country;
-                        CustomerEmail.Text = customer.Email;
-                        CustomerPhone.Text = customer.Phone;
-                        CustomerNotes.Text = customer.Notes;
-                        ContactName.Text = customer.ContactName;
-                        ContactPhone.Text = customer.ContactPhone;
-                        ContactEmail.Text = customer.ContactEmail;
+                        // Use the helper method to populate the form fields with customer data
+                        CustomerHelper.PopulateCustomerFormFromCustomer(customer, CustomerName, CustomerAddress, CustomerCity, StateDropDownList,
+                                                                        CustomerZip, CountryDropDownList, CustomerEmail, CustomerPhone,
+                                                                        CustomerNotes, ContactName, ContactPhone, ContactEmail);
+
 
                         UpdateButton.Visible = true;
                         DeleteButton.Visible = true;
@@ -195,18 +178,11 @@ namespace assessment_platform_developer
 
                     if (customer != null)
                     {
-                        customer.Name = CustomerName.Text;
-                        customer.Address = CustomerAddress.Text;
-                        customer.City = CustomerCity.Text;
-                        customer.State = StateDropDownList.SelectedItem.Text;
-                        customer.Zip = CustomerZip.Text;
-                        customer.Country = CountryDropDownList.SelectedItem.Text;
-                        customer.Email = CustomerEmail.Text;
-                        customer.Phone = CustomerPhone.Text;
-                        customer.Notes = CustomerNotes.Text;
-                        customer.ContactName = ContactName.Text;
-                        customer.ContactPhone = ContactPhone.Text;
-                        customer.ContactEmail = ContactEmail.Text;
+                        // Use the helper method to populate the customer object with the form data
+                        CustomerHelper.PopulateCustomerFromForm(customer, CustomerName, CustomerAddress, CustomerCity, StateDropDownList,
+                                                                 CustomerZip, CountryDropDownList, CustomerEmail, CustomerPhone,
+                                                                 CustomerNotes, ContactName, ContactPhone, ContactEmail);
+
 
                         var updatedCustomer = await customerApiService.UpdateCustomerAsync(customerId, customer);
 
