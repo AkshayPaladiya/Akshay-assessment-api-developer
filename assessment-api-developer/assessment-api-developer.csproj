@@ -258,6 +258,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Utils\" />
+	<Folder Include="Helpers\" />
+	<Compile Include="Helpers\CustomerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
