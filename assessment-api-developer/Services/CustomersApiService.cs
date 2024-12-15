@@ -17,13 +17,13 @@ namespace assessment_platform_developer.Services
         Task<bool> DeleteCustomerAsync(int customerId);
     }
 
-    public class CustomerApiService : ICustomerApiService
+    public class CustomersApiService : ICustomerApiService
     {
         // Hardcoding the base URL directly in the service
         private readonly string _baseUrl = "https://localhost:44358/"; // Example base URL (update it as needed)
         private readonly HttpClient _httpClient;
 
-        public CustomerApiService()
+        public CustomersApiService()
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(_baseUrl);
